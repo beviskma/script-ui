@@ -1,33 +1,39 @@
 local player = game.Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui", player.PlayerGui)
+local gui = script.Parent  -- Đảm bảo LocalScript nằm trong NotificationFrame
 
-local usernameLabel = Instance.new("TextLabel", screenGui)
-usernameLabel.Position = UDim2.new(0, 10, 0, 10)
-usernameLabel.Size = UDim2.new(0, 200, 0, 30)
+-- Lấy các thành phần giao diện
+local usernameLabel = gui:WaitForChild("UsernameLabel")
+local taskLabel = gui:WaitForChild("TaskLabel")
+local timeFpsLabel = gui:WaitForChild("TimeFpsLabel")
+local jobIdLabel = gui:WaitForChild("JobIdLabel")
+local logoImage = gui:WaitForChild("LogoImage")
+
+-- Thiết lập logo
+logoImage.Image = "rbxassetid://1234567890"  -- Đổi ID này thành logo Jogbeviss bạn upload
+logoImage.BackgroundTransparency = 1
+logoImage.ScaleType = Enum.ScaleType.Fit
+
+-- Hiển thị tên người chơi
 usernameLabel.Text = "Username: " .. player.Name
-usernameLabel.TextColor3 = Color3.new(1, 1, 1)
-usernameLabel.BackgroundTransparency = 1
-usernameLabel.Font = Enum.Font.SourceSansBold
-usernameLabel.TextSize = 24
 
-local fpsLabel = Instance.new("TextLabel", screenGui)
-fpsLabel.Position = UDim2.new(0, 10, 0, 50)
-fpsLabel.Size = UDim2.new(0, 200, 0, 30)
-fpsLabel.TextColor3 = Color3.new(1, 1, 1)
-fpsLabel.BackgroundTransparency = 1
-fpsLabel.Font = Enum.Font.SourceSansBold
-fpsLabel.TextSize = 24
+-- Lấy task từ StringValue
+local taskValue = player:FindFirstChild("CurrentTask")
+if taskValue then
+	taskLabel.Text = "Task: " .. taskValue.Value
+else
+	taskLabel.Text = "Task: Unknown"
+end
 
-local runService = game:GetService("RunService")
-local lastTime = tick()
-local frameCount = 0
+-- Đồng hồ thời gian & FPS (giả lập đơn giản)
+local startTime = tick()
 
-runService.RenderStepped:Connect(function()
-    frameCount = frameCount + 1
-    local currentTime = tick()
-    if currentTime - lastTime >= 1 then
-        fpsLabel.Text = "FPS: " .. frameCount
-        frameCount = 0
-        lastTime = currentTime
-    end
+game:GetService("RunService").RenderStepped:Connect(function()
+	local currentTime = math.floor(tick() - startTime)
+	local minutes = math.floor(currentTime / 60)
+	local seconds = currentTime % 60
+	local fps = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+	timeFpsLabel.Text = string.format("Time: %dm %ds - FPS: %d", minutes, seconds, fps)
 end)
+
+-- Gán jobId nếu có
+jobIdLabel.Text = "Job Id: " .. (game.JobId ~= "" and game.JobId or "N/A")
