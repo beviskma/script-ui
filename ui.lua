@@ -8,11 +8,6 @@ local timeFpsLabel = gui:WaitForChild("TimeFpsLabel")
 local jobIdLabel = gui:WaitForChild("JobIdLabel")
 local logoImage = gui:WaitForChild("LogoImage")
 
--- Thiết lập logo
-logoImage.Image = "rbxassetid://1234567890"  -- Đổi ID này thành logo Jogbeviss bạn upload
-logoImage.BackgroundTransparency = 1
-logoImage.ScaleType = Enum.ScaleType.Fit
-
 -- Hiển thị tên người chơi
 usernameLabel.Text = "Username: " .. player.Name
 
@@ -34,6 +29,3 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	local fps = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
 	timeFpsLabel.Text = string.format("Time: %dm %ds - FPS: %d", minutes, seconds, fps)
 end)
-
--- Gán jobId nếu có
-jobIdLabel.Text = "Job Id: " .. (game.JobId ~= "" and game.JobId or "N/A")
